@@ -1,0 +1,87 @@
+/* src/styles.css */
+.App {
+  background-color: honeydew;
+  width: 80%;
+  margin: 0 auto;
+  padding: 20px;
+  padding-bottom: 60px;
+  font-family: 'Arial', sans-serif;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+form {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  gap: 10px;
+}
+
+input,
+select,
+button {
+  padding: 10px;
+  margin: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+input {
+  width: 120px;
+}
+
+select {
+  width: 150px;
+}
+
+button {
+  background-color: #28a745;
+  color: white;
+  cursor: pointer;
+  width: 120px;
+}
+
+button:hover {
+  background-color: #218838;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin: 5px 0;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+}
+
+h2 {
+  text-align: center;
+  margin-top: 20px;
+  color: #555;
+}
+
+.expense-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 40px;
+  gap: 20px;
+}
+
+.expense-chart {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+}
+
+.expense-list {
+  flex: 1;
+}
