@@ -1,70 +1,34 @@
-# Getting Started with Create React App
+# Expense-Tracker-react
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Ledger is a responsive React expense tracker with reliable local persistence, editable records, category and month filters, spending insights, and safe CSV exports. Migrated from Create React App to Vite.
 
-## Available Scripts
+## Run locally
 
-In the project directory, you can run:
+```bash
+npm ci
+npm run dev
+npm test
+npm run build
+```
 
-### `npm start`
+Requires Node.js 22.12+ (Node.js 24 recommended).
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Data and privacy
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Records are stored only in browser localStorage. USD is retained from the original project. Amounts use integer cents to avoid floating-point rounding errors. Existing `expenses` records migrate on startup without removing the original data. Old records have no date, so their migration date is used and their notes identify the migration.
 
-### `npm test`
+Unreadable saved data is preserved. Download a raw backup before resetting it. CSV exports neutralize spreadsheet formula prefixes. Use **Export CSV** to back up your records before clearing browser data.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Deployment
 
-### `npm run build`
+`npm run build` produces `dist/`. Host that directory on a static hosting service. Relative asset paths support deployment under a repository subdirectory.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Development
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Changes are checked by GitHub Actions. Keep credentials in environment variables and never commit `.env`, local databases, or build output.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Preview
 
-### `npm run eject`
+![Application preview](docs/preview.png)
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Local screenshot; transaction and registration fields use sample data.
