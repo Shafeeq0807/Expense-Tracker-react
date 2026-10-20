@@ -1,97 +1,75 @@
 // src/App.js
-import React, { useState, useEffect } from "react";
-import ExpenseForm from "./components/ExpenseForm";
-import ExpenseList from "./components/ExpenseList";
-import ExpenseChart from "./components/ExpenseChart";
+import React, { useState, useEffect, useCallback } from "react";
+import AuthPage from "./components/AuthPage";
+import Dashboard from "./components/Dashboard";
+import { api, getToken, setToken } from "./api";
 import "./App.css";
 
+const THEME_KEY = "expense_tracker_theme";
+
+// Saved choice first, then the system preference
+const initialTheme = () => {
+  try {
+    const saved = localStorage.getItem(THEME_KEY);
+    if (saved === "light" || saved === "dark") return saved;
+  } catch {
+    // Storage blocked: fall through to the system preference
+  }
+  return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+};
+
 function App() {
-  const [expenses, setExpenses] = useState([]);
+  const [user, setUser] = useState(null);
+  const [checking, setChecking] = useState(() => Boolean(getToken()));
+  const [theme, setTheme] = useState(initialTheme);
 
   useEffect(() => {
-    const savedExpenses = JSON.parse(localStorage.getItem("expenses"));
-    if (savedExpenses) {
-      setExpenses(savedExpenses);
+    document.documentElement.dataset.theme = theme;
+    try {
+      localStorage.setItem(THEME_KEY, theme);
+    } catch {
+      // Not saved; the theme still applies for this visit
     }
+  }, [theme]);
+
+  const toggleTheme = useCallback(() => setTheme((t) => (t === "dark" ? "light" : "dark")), []);
+
+  // Restore the session from a saved token on first load
+  useEffect(() => {
+    if (!getToken()) return;
+    api("/auth/me")
+      .then(({ user }) => setUser(user))
+      .catch(() => setToken(null))
+      .finally(() => setChecking(false));
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem("expenses", JSON.stringify(expenses));
-  }, [expenses]);
+  const handleAuth = useCallback(({ token, user }) => {
+    setToken(token);
+    setUser(user);
+  }, []);
 
-  const addExpense = (expense) => {
-    setExpenses([...expenses, expense]);
-  };
+  const logout = useCallback(() => {
+    setToken(null);
+    setUser(null);
+  }, []);
+
+  if (checking) {
+    return <div className="splash">Loading your dashboard…</div>;
+  }
+
+  if (!user) {
+    return <AuthPage onAuth={handleAuth} theme={theme} onToggleTheme={toggleTheme} />;
+  }
 
   return (
-    <div className="App">
-      <h1>Expense Tracker</h1>
-      <ExpenseForm addExpense={addExpense} />
-      <ExpenseList expenses={expenses} />
-      <ExpenseChart expenses={expenses} />
-    </div>
+    <Dashboard
+      user={user}
+      onUserChange={setUser}
+      onLogout={logout}
+      theme={theme}
+      onToggleTheme={toggleTheme}
+    />
   );
 }
 
 export default App;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*import logo from './logo.svg';
-import './App.css';
-
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
-
-export default App;*/

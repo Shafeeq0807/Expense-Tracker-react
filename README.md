@@ -1,70 +1,113 @@
-# Getting Started with Create React App
+# PocketPal: Student Expense Tracker
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A student-friendly expense tracker with login, spending analytics and a MySQL database.
+All amounts are in Indian Rupees (₹).
 
-## Available Scripts
+- **Repository:** https://github.com/Shafeeq0807/Expense-Tracker-react
+- **Live site (frontend only):** https://Shafeeq0807.github.io/Expense-Tracker-react/
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+- **Accounts:** sign up and log in. Each user only sees their own data.
+- **Expenses:** add, edit and delete expenses from a quick pop-up, with student categories
+  (Food, Transport, Books & Stationery, Rent & Hostel, Recharge & Internet, Fees and more).
+- **Pocket money budget:** set a monthly budget and see what's left and how much you can spend per day.
+- **Overview:** this month vs last month, month-end projection, top-category cards with mini charts,
+  recent expenses and a 30-day activity chart.
+- **Analytics:** monthly and 30-day trends, category split, and plain-language money tips.
+- **Navigation:** side menu (slide-out on phones), search from the top bar, and filters by spending group.
+- **Light and dark mode:** follows your system setting, and remembers your choice.
+- **Tools:** search and filter the expense list, and export it to CSV.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Tech stack
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- Frontend: React (Create React App), Chart.js
+- Backend: Node.js, Express, mysql2, bcryptjs (password hashing), JSON Web Tokens
+- Database: MySQL 8
 
-### `npm test`
+## One-time setup
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 1. Create the database
 
-### `npm run build`
+From the project folder, run (you'll be asked for your MySQL root password):
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```powershell
+& "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" -u root -p -e "source server/schema.sql"
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 2. Create a limited database user
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Open the MySQL client with the same command, then run:
 
-### `npm run eject`
+```sql
+CREATE USER 'expense_app'@'localhost' IDENTIFIED BY 'choose-a-strong-password';
+GRANT SELECT, INSERT, UPDATE, DELETE ON expense_tracker.* TO 'expense_app'@'localhost';
+FLUSH PRIVILEGES;
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### 3. Configure the server
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```powershell
+cd server
+copy .env.example .env
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Edit `server/.env`:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- `DB_PASSWORD`: the password you chose in step 2.
+- `JWT_SECRET`: a long random string, for example from
+  `node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"`.
 
-## Learn More
+### 4. Install dependencies
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```powershell
+cd server
+npm install
+cd ..
+npm install
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Running the app
 
-### Code Splitting
+**Easiest:** double-click `start-app.bat`. It opens the API and the app in two windows, then your browser.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Or start them yourself:
 
-### Analyzing the Bundle Size
+Use two terminals from the project folder:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```powershell
+# Terminal 1: API on http://localhost:5000
+cd server
+npm run dev
 
-### Making a Progressive Web App
+# Terminal 2: frontend on http://localhost:3000
+npm start
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Open http://localhost:3000, sign up, and start adding expenses.
 
-### Advanced Configuration
+Check the API and database connection at http://localhost:5000/api/health.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## Project structure
 
-### Deployment
+```
+server/
+  index.js            Express app and middleware
+  db.js               MySQL connection pool
+  schema.sql          Database tables
+  middleware/auth.js  Checks the login token on protected routes
+  routes/auth.js      Register, login, current user, budget
+  routes/expenses.js  Expense CRUD and analytics
+src/
+  App.js              Login state and page switching
+  api.js              Calls the API and attaches the login token
+  components/         Dashboard, stat cards, insights, charts, form, table
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## Notes
 
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- Passwords are stored as bcrypt hashes, never in plain text.
+- The API runs on your own machine, so the app works locally. Publishing it online
+  (for example on GitHub Pages) needs a hosted API and MySQL server, with the
+  frontend's `REACT_APP_API_URL` pointing at that API.
+- Amounts are shown in US dollars. To change the currency, edit `src/utils.js`.
